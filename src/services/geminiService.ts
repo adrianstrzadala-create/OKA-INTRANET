@@ -1,14 +1,12 @@
-// Fix: Removed Vite-specific triple-slash directive to resolve 'Cannot find type definition file' error.
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import type { User } from '../types';
 
 // Fix: Updated API key retrieval to use only process.env.API_KEY as per Gemini API guidelines.
-// This resolves an error where `import.meta.env` was not defined.
+// This change resolves the 'Property 'env' does not exist on type 'ImportMeta'' error.
 const apiKey = process.env.API_KEY;
 
 if (!apiKey) {
-  // This error will appear if the API key is not set in the environment variables.
-  // Check your environment variable configuration.
+  // Fix: Updated error message to be more generic and not mention Vite-specific variable names.
   throw new Error("API_KEY is not defined. Please ensure the key is set.");
 }
 
@@ -44,7 +42,6 @@ export const streamChat = async (message: string, user: User): Promise<AsyncGene
     return result;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    // Add a check for authentication errors specifically
     if (error instanceof Error && error.message.includes('API key not valid')) {
        // Fix: Made error message more generic by removing "w Vercel".
        throw new Error("Klucz API jest nieprawidłowy. Sprawdź konfigurację.");
